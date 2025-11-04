@@ -1,0 +1,24 @@
+#verify new ab file starts with SE
+
+if "file1.txt.a" in listfiles():
+  removefile("file1.txt.a")
+
+if "file1.txt.b" in listfiles():
+  removefile("file1.txt.b")
+
+#create new ab file
+
+f = ABopenfile("file1.txt", True)
+
+try:
+  #read first 2 chars
+  data = f.readat(2,0)
+  if data != "SE":
+    log("FAIL: new file missing SE contains '%s'" % data)
+  else:
+    log("PASS: new file contains SE")
+finally:
+  f.close()
+
+
+  

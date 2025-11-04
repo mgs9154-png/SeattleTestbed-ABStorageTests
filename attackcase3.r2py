@@ -1,0 +1,49 @@
+#Concurrent write behavior and corruption potential
+
+
+#clean files
+
+if "file3.txt.a" in listfiles():
+  removefile("file3.txt.a")
+
+if "file3.txt.b" in listfiles():
+  removefile("file3.txt.b")
+
+f= ABopenfile("file3.txt",True)
+f.close()
+
+
+#pattern writer
+def writer(id):
+  try:
+    f = ABopenfile("file3.txt", True)
+    #write pattern
+    f.writeat(("WR%d-" % id) * 25, 0)
+    f.close()
+    log("log %d complete" % id)
+  except Exception as e:
+    log("error writer %d FAIL %s" % (id, str(e)))
+
+
+#run multiple write
+for i in range(4):
+  writer(i)
+  #sleep between write
+  sleep(0.4)
+
+#read final file content
+f = ABopenfile("file3.txt", True)
+data = f.readat(2000, 0)
+f.close()
+
+log("final contents %s" % data[:200])
+
+found_all = True
+for i in range(4):
+  if ("WR%d-" % i) not in data:
+    found_all = False
+    log("pattern not found %d" % i)
+if found_all:
+  log("PASS:")
+else:
+  log(" missing pattern")

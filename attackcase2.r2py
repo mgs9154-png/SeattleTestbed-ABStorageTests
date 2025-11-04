@@ -1,0 +1,29 @@
+#attempt to write invalid data and check if block
+
+#remove prev files
+
+if "file2.txt.a" in listfiles():
+  removefile("file2.txt.a")
+
+if "file2.txt.b" in listfiles():
+  removefile("file2.txt.b")
+
+f= ABopenfile("file2.txt",True)
+
+try:
+  #write invalid stuff
+  f.writeat("invalid_thing",0)
+  f.close()
+
+  #reopen to check write was saved
+  f = ABopenfile("file2.txt", True)
+  data = f.readat(40, 0)
+  if data == "invalid_thing":
+    log("FAIL: header written successfully")
+  else:
+    log("PASS :header not written due to blocked content")
+finally:
+  try:
+    f.close()
+  except:
+    pass
